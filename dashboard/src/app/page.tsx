@@ -7,6 +7,7 @@ import { MetricsBar } from '@/components/MetricsBar';
 import { ActivityFeed } from '@/components/ActivityFeed';
 import { LoanTable } from '@/components/LoanTable';
 import { TipFeed } from '@/components/TipFeed';
+import { PositionsChart } from '@/components/PositionsChart';
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3001';
 
@@ -71,9 +72,10 @@ export default function Dashboard() {
 
           {/* Main content grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left column — Flow + Loans */}
+            {/* Left column — Flow + Positions + Loans */}
             <div className="lg:col-span-2 space-y-6">
               <FlowDiagram state={state} />
+              <PositionsChart state={state} />
               <LoanTable loans={state.loans} />
             </div>
 

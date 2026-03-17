@@ -167,19 +167,13 @@ What should I do? Consider deploying idle capital, rebalancing positions, borrow
 
     if (actualAmount < 1) return;
 
-    // Execute via WDK Aave protocol
-    const wdk = this.wallet.getWdkInstance('strategist');
-    if (wdk) {
-      try {
-        // TODO: Real Aave integration
-        // const account = await wdk.getAccount(chain, 0);
-        // const aave = account.getLendingProtocol('aave');
-        // await aave.supply({ amount: BigInt(Math.round(actualAmount * 1e6)), token: USDT_ADDRESS });
-        logger.info(`[STRATEGIST] Supplying ${actualAmount} USDt to ${protocol} on ${chain}`);
-      } catch (err) {
-        logger.error(`[STRATEGIST] Supply failed:`, err);
-        return;
-      }
+    // Execute via WDK Aave protocol (real or simulated)
+    try {
+      const result = await this.wallet.aaveSupply('strategist', actualAmount, 'USDT');
+      logger.info(`[STRATEGIST] Supplied ${actualAmount} USDt to ${protocol} on ${chain}: tx=${result.hash}`);
+    } catch (err) {
+      logger.error(`[STRATEGIST] Supply failed:`, err);
+      return;
     }
 
     const position: DeFiPosition = {

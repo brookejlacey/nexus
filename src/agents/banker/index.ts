@@ -337,20 +337,46 @@ Evaluate this loan request. Consider the borrower's credit history, the purpose 
   }
 
   private async depositToAave(amount: number): Promise<void> {
-    const wdk = this.wallet.getWdkInstance('banker');
-    if (wdk) {
-      try {
-        // TODO: Integrate actual Aave protocol module
-        // const account = await wdk.getAccount('ethereum', 0);
-        // const aave = account.getLendingProtocol('aave');
-        // await aave.supply({ amount: BigInt(amount * 1e6), token: USDT_ADDRESS });
-        logger.info(`[BANKER] Would deposit ${amount} USDt to Aave`);
-      } catch (err) {
-        logger.error(`[BANKER] Aave deposit failed:`, err);
-      }
+    try {
+      const result = await this.wallet.aaveSupply('banker', amount, 'USDT');
+      this.aaveDeposited += amount;
+
+      this.bus.emitDashboard({
+        type: 'transaction',
+        data: {
+          agent: 'banker',
+          txHash: result.hash,
+          description: `Supplied ${amount.toFixed(2)} USDt to Aave V3 (idle capital yield)`,
+        },
+      });
+
+      this.updateAction(`deposited ${amount.toFixed(2)} USDt to Aave V3`);
+    } catch (err) {
+      logger.error(`[BANKER] Aave deposit failed:`, err);
     }
-    this.aaveDeposited += amount;
-    this.updateAction(`deposited ${amount.toFixed(2)} USDt to Aave`);
+  }
+
+  private async withdrawFromAave(amount: number): Promise<void> {
+    try {
+      const withdrawAmount = Math.min(amount, this.aaveDeposited);
+      if (withdrawAmount <= 0) return;
+
+      const result = await this.wallet.aaveWithdraw('banker', withdrawAmount, 'USDT');
+      this.aaveDeposited -= withdrawAmount;
+
+      this.bus.emitDashboard({
+        type: 'transaction',
+        data: {
+          agent: 'banker',
+          txHash: result.hash,
+          description: `Withdrew ${withdrawAmount.toFixed(2)} USDt from Aave V3`,
+        },
+      });
+
+      this.updateAction(`withdrew ${withdrawAmount.toFixed(2)} USDt from Aave V3`);
+    } catch (err) {
+      logger.error(`[BANKER] Aave withdraw failed:`, err);
+    }
   }
 
   /** Public accessors for dashboard */
