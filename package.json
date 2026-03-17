@@ -1,0 +1,45 @@
+{
+  "name": "nexus",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Self-sustaining multi-agent economic network powered by Tether WDK",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "dashboard:dev": "cd dashboard && npm run dev",
+    "dashboard:build": "cd dashboard && npm run build",
+    "lint": "eslint src/ --ext .ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@tetherto/wdk": "1.0.0-beta.6",
+    "@tetherto/wdk-wallet-evm": "2.0.0-rc.1",
+    "@tetherto/wdk-wallet-evm-erc-4337": "1.0.0-beta.5",
+    "@tetherto/wdk-wallet-solana": "1.0.0-beta.5",
+    "@tetherto/wdk-wallet-btc": "1.0.0-beta.6",
+    "@tetherto/wdk-protocol-lending-aave-evm": "1.0.0-beta.3",
+    "@tetherto/wdk-protocol-swap-velora-evm": "1.0.0-beta.4",
+    "@tetherto/wdk-protocol-bridge-usdt0-evm": "1.0.0-beta.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "ws": "^8.18.0",
+    "zod": "^3.24.2",
+    "winston": "^3.17.0",
+    "ethers": "^6.13.5"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.12.0",
+    "@types/ws": "^8.5.14",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5",
+    "eslint": "^9.19.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

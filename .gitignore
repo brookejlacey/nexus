@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+.env.local
+*.log
+.DS_Store
+coverage/
+.next/
+dashboard/node_modules/
+dashboard/.next/
+wdk-data.json
