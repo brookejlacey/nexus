@@ -153,7 +153,7 @@ Who should I tip next and how much? Consider engagement, growth, and recency.`;
 
   private handleFundTransfer(msg: Extract<AgentMessage, { type: 'fund_transfer' }>): void {
     this.yieldFunding += msg.amount;
-    this.poolBalance += msg.amount;
+    // Don't manually add to poolBalance — tick() reads the canonical wallet balance
     logger.info(`[PATRON] Received ${msg.amount.toFixed(2)} USDt yield funding from ${msg.from}`);
     this.updateAction(`received ${msg.amount.toFixed(2)} USDt yield funding`);
   }

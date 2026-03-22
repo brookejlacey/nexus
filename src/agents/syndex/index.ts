@@ -352,6 +352,6 @@ Is any intervention needed? Consider rebalancing, circuit breaking, or capital r
 
   /** Get full network state (for API/dashboard) */
   getNetworkState(): NetworkState {
-    return { ...this.networkState };
+    return JSON.parse(JSON.stringify(this.networkState));
   }
 }

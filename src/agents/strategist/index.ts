@@ -257,11 +257,12 @@ What should I do? Consider deploying idle capital, rebalancing positions, borrow
     if (!position || position.amount <= 0) return;
 
     const withdrawn = position.currentValue;
-    const profit = withdrawn - position.amount;
+    const originalAmount = position.amount;
+    const profit = withdrawn - originalAmount;
 
     position.amount = 0;
     position.currentValue = 0;
-    this.totalDeployed -= position.amount;
+    this.totalDeployed -= originalAmount;
     this.totalYieldEarned += profit;
     this.pnl += profit;
 

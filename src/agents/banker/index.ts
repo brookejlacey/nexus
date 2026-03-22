@@ -274,7 +274,17 @@ Should I deposit idle capital into Aave for base yield, or hold liquidity for po
     logger.info(`[BANKER] Loan request from ${msg.from}: ${msg.amount} USDt for "${msg.purpose}"`);
 
     const borrowerCredit = this.getCreditProfile(msg.from);
-    const availableLiquidity = this.poolSize - (this.poolSize * 0.2); // Keep 20% reserve
+    let availableLiquidity = this.poolSize - (this.poolSize * 0.2); // Keep 20% reserve
+
+    // If Aave deposits exist and liquidity is insufficient, withdraw to fund the loan
+    if (availableLiquidity < msg.amount && this.aaveDeposited > 0) {
+      const needed = msg.amount - availableLiquidity;
+      const withdrawAmount = Math.min(needed, this.aaveDeposited);
+      await this.withdrawFromAave(withdrawAmount);
+      this.poolSize = await this.wallet.getBalance('banker');
+      availableLiquidity = this.poolSize - (this.poolSize * 0.2);
+    }
+
     const currentExposure = this.loans
       .filter(l => l.borrower === msg.from && l.status === 'active')
       .reduce((sum, l) => sum + l.principal, 0);
