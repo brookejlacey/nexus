@@ -97,7 +97,7 @@ async function main() {
   logger.info('[BOOT] Negotiation engine + Natural language command engine initialized');
 
   // ─── Start API Server ───────────────────────────────────────
-  const apiPort = parseInt(process.env.WS_PORT || '3001');
+  const apiPort = parseInt(process.env.PORT || process.env.WS_PORT || '3001');
   const api = new ApiServer(bus, syndex, banker, strategist, patron);
   api.setEngines(command, negotiation);
   api.start(apiPort);
