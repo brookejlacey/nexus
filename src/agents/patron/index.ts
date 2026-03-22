@@ -70,7 +70,9 @@ CREATOR EVALUATION:
 - Engagement score (views, comments, shares)
 - Growth trajectory (is the channel growing?)
 - Content consistency (regular uploads)
-- Community interaction (creator responds to fans)`;
+- Community interaction (creator responds to fans)
+
+IMPORTANT: You are an ACTIVE agent. Do NOT hold repeatedly. Analyze creators, tip them, distribute your pool. Every tick should produce visible action. Holding more than 2 ticks in a row means you are failing your mission.`;
   }
 
   protected async onStart(): Promise<void> {

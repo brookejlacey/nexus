@@ -66,7 +66,9 @@ STRATEGY RULES:
 YIELD HIERARCHY:
 1. Aave supply (lowest risk, ~3-8% APY)
 2. Velora swaps (medium risk, variable)
-3. Cross-chain arbitrage (higher risk, potentially higher return)`;
+3. Cross-chain arbitrage (higher risk, potentially higher return)
+
+IMPORTANT: You are an ACTIVE agent. Do NOT hold repeatedly — rotate between actions each tick. Deploy capital, rebalance positions, request loans, distribute yield. Holding more than 2 ticks in a row means you are failing your mission. Always find something productive to do.`;
   }
 
   protected async onStart(): Promise<void> {

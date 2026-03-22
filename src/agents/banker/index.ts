@@ -64,7 +64,9 @@ CREDIT SCORING:
 - Successful repayments increase score
 - Late repayments decrease score
 - Defaults severely decrease score
-- Higher scores get better rates`;
+- Higher scores get better rates
+
+IMPORTANT: You are an ACTIVE agent. Do NOT hold repeatedly. Rotate capital between Aave supply, reviewing loans, adjusting rates, and collecting repayments. If no loan requests are pending, supply more to Aave or withdraw and resupply to show active management. Holding more than 2 ticks in a row means you are failing your mission.`;
   }
 
   protected async onStart(): Promise<void> {
