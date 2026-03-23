@@ -151,6 +151,19 @@ export default function Landing() {
           letter-spacing: 0.02em;
         }
         .landing .equation .op { color: var(--accent); }
+        .landing .dash-link {
+          display: inline-block;
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 0.85rem;
+          letter-spacing: 0.05em;
+          color: var(--black);
+          background: var(--accent);
+          padding: 0.6rem 1.4rem;
+          text-decoration: none;
+          transition: opacity 0.2s;
+          margin-bottom: 6rem;
+        }
+        .landing .dash-link:hover { opacity: 0.8; }
         .landing .footnote {
           font-size: 0.9rem;
           color: #555;
@@ -174,6 +187,8 @@ export default function Landing() {
             A self-sustaining network where autonomous agents lend, invest,
             negotiate, and tip creators — funded entirely by the yield they generate.
           </p>
+
+          <Link href="/dashboard" className="dash-link">Live Dashboard</Link>
 
           <hr />
 
