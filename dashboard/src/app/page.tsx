@@ -10,8 +10,6 @@ export default function Landing() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
-
         .landing * { box-sizing: border-box; }
         .landing {
           --black: #080808;
@@ -21,7 +19,7 @@ export default function Landing() {
           --accent: #34d399;
           background: var(--black);
           color: var(--white);
-          font-family: 'IBM Plex Sans', system-ui, sans-serif;
+          font-family: var(--font-plex-sans), 'IBM Plex Sans', system-ui, sans-serif;
           font-weight: 300;
           line-height: 1.7;
           min-height: 100vh;
@@ -32,7 +30,7 @@ export default function Landing() {
           padding: 12vh 24px 16vh;
         }
         .landing .mark {
-          font-family: 'IBM Plex Mono', monospace;
+          font-family: var(--font-plex-mono), 'IBM Plex Mono', monospace;
           font-size: 0.85rem;
           font-weight: 400;
           letter-spacing: 0.15em;
@@ -41,7 +39,7 @@ export default function Landing() {
           margin-bottom: 4rem;
         }
         .landing h1 {
-          font-family: 'IBM Plex Sans', sans-serif;
+          font-family: var(--font-plex-sans), 'IBM Plex Sans', sans-serif;
           font-size: clamp(2.6rem, 6vw, 4rem);
           font-weight: 300;
           line-height: 1.2;
@@ -61,7 +59,7 @@ export default function Landing() {
           margin: 4rem 0;
         }
         .landing .section-label {
-          font-family: 'IBM Plex Mono', monospace;
+          font-family: var(--font-plex-mono), 'IBM Plex Mono', monospace;
           font-size: 0.8rem;
           font-weight: 500;
           letter-spacing: 0.2em;
@@ -88,7 +86,7 @@ export default function Landing() {
           padding: 1.8rem;
         }
         .landing .agent-name {
-          font-family: 'IBM Plex Mono', monospace;
+          font-family: var(--font-plex-mono), 'IBM Plex Mono', monospace;
           font-size: 0.95rem;
           font-weight: 500;
           letter-spacing: 0.05em;
@@ -103,7 +101,7 @@ export default function Landing() {
           margin: 0;
         }
         .landing .flow {
-          font-family: 'IBM Plex Mono', monospace;
+          font-family: var(--font-plex-mono), 'IBM Plex Mono', monospace;
           font-size: 0.95rem;
           line-height: 2.2;
           color: var(--dim);
@@ -120,7 +118,7 @@ export default function Landing() {
           margin: 1.5rem 0 4rem;
         }
         .landing .tech span {
-          font-family: 'IBM Plex Mono', monospace;
+          font-family: var(--font-plex-mono), 'IBM Plex Mono', monospace;
           font-size: 0.85rem;
           letter-spacing: 0.04em;
           color: var(--dim);
@@ -133,7 +131,7 @@ export default function Landing() {
           margin-top: 2rem;
         }
         .landing .links a {
-          font-family: 'IBM Plex Mono', monospace;
+          font-family: var(--font-plex-mono), 'IBM Plex Mono', monospace;
           font-size: 0.95rem;
           color: var(--white);
           text-decoration: none;
@@ -144,7 +142,7 @@ export default function Landing() {
         }
         .landing .links a:hover { border-color: var(--accent); }
         .landing .equation {
-          font-family: 'IBM Plex Mono', monospace;
+          font-family: var(--font-plex-mono), 'IBM Plex Mono', monospace;
           font-size: 1.2rem;
           color: var(--white);
           margin: 1.5rem 0 1rem;
@@ -153,7 +151,7 @@ export default function Landing() {
         .landing .equation .op { color: var(--accent); }
         .landing .dash-link {
           display: inline-block;
-          font-family: 'IBM Plex Mono', monospace;
+          font-family: var(--font-plex-mono), 'IBM Plex Mono', monospace;
           font-size: 0.85rem;
           letter-spacing: 0.05em;
           color: var(--black);
