@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Syndex</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #080808;
+      --white: #e8e8e8;
+      --dim: #666;
+      --faint: #222;
+      --accent: #34d399;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'IBM Plex Sans', system-ui, sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 12vh 24px 16vh;
+    }
+
+    /* ---- Header ---- */
+    .mark {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4rem;
+    }
+
+    h1 {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 300;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+
+    .lead {
+      font-size: 1.1rem;
+      color: var(--dim);
+      max-width: 540px;
+      margin-bottom: 6rem;
+    }
+
+    /* ---- Divider ---- */
+    hr {
+      border: none;
+      border-top: 1px solid var(--faint);
+      margin: 4rem 0;
+    }
+
+    /* ---- Sections ---- */
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 2rem;
+    }
+
+    p {
+      color: #aaa;
+      margin-bottom: 1.5rem;
+      max-width: 580px;
+    }
+
+    /* ---- Agent grid ---- */
+    .agents {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--faint);
+      border: 1px solid var(--faint);
+      margin: 2rem 0 4rem;
+    }
+
+    .agent {
+      background: var(--black);
+      padding: 1.8rem;
+    }
+
+    .agent-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: var(--white);
+      margin-bottom: 0.6rem;
+    }
+
+    .agent-desc {
+      font-size: 0.85rem;
+      color: var(--dim);
+      line-height: 1.5;
+      max-width: none;
+      margin: 0;
+    }
+
+    /* ---- Flow diagram (text) ---- */
+    .flow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 2.2;
+      color: var(--dim);
+      margin: 2rem 0 4rem;
+      padding-left: 1rem;
+      border-left: 1px solid var(--faint);
+    }
+
+    .flow .highlight {
+      color: var(--accent);
+    }
+
+    .flow .label {
+      color: var(--white);
+    }
+
+    /* ---- Tech list ---- */
+    .tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1.5rem 0 4rem;
+    }
+
+    .tech span {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      color: var(--dim);
+      border: 1px solid var(--faint);
+      padding: 0.4rem 0.75rem;
+    }
+
+    /* ---- Links ---- */
+    .links {
+      display: flex;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .links a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--white);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      padding-bottom: 2px;
+      border-bottom: 1px solid var(--faint);
+      transition: border-color 0.2s;
+    }
+
+    .links a:hover {
+      border-color: var(--accent);
+    }
+
+    /* ---- Economics ---- */
+    .equation {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1rem;
+      color: var(--white);
+      margin: 1.5rem 0 1rem;
+      letter-spacing: 0.02em;
+    }
+
+    .equation .op {
+      color: var(--accent);
+    }
+
+    .footnote {
+      font-size: 0.82rem;
+      color: #555;
+      margin-top: 3rem;
+      font-style: italic;
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 540px) {
+      .agents { grid-template-columns: 1fr; }
+      .page { padding: 8vh 20px 12vh; }
+      .lead { margin-bottom: 4rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <div class="mark">Syndex</div>
+
+    <h1>Four AI agents.<br>One economy.</h1>
+
+    <p class="lead">
+      A self-sustaining network where autonomous agents lend, invest,
+      negotiate, and tip creators — funded entirely by the yield they generate.
+    </p>
+
+    <hr>
+
+    <div class="section-label">The Agents</div>
+
+    <div class="agents">
+      <div class="agent">
+        <div class="agent-name">Syndex</div>
+        <p class="agent-desc">Orchestrator. Distributes capital, monitors health, tracks whether the network earns more than it spends.</p>
+      </div>
+      <div class="agent">
+        <div class="agent-name">Banker</div>
+        <p class="agent-desc">Runs a lending pool with credit scoring. Parks idle capital in Aave for base yield.</p>
+      </div>
+      <div class="agent">
+        <div class="agent-name">Strategist</div>
+        <p class="agent-desc">DeFi operator. Supplies to Aave, swaps on Velora, bridges USDT0 — chasing the best risk-adjusted return.</p>
+      </div>
+      <div class="agent">
+        <div class="agent-name">Patron</div>
+        <p class="agent-desc">Tips Rumble creators using surplus yield. The network's way of giving back.</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="section-label">How Money Flows</div>
+
+    <div class="flow">
+      <span class="label">Capital in</span> <span class="highlight">&rarr;</span> Syndex distributes to Banker (60%) and Strategist (30%)<br>
+      <span class="label">Banker</span> <span class="highlight">&rarr;</span> Lends between agents, parks idle funds in Aave<br>
+      <span class="label">Strategist</span> <span class="highlight">&rarr;</span> Rotates through DeFi positions for yield<br>
+      <span class="label">Yield surplus</span> <span class="highlight">&rarr;</span> Flows to Patron for creator tips<br>
+      <span class="label">All decisions</span> <span class="highlight">&rarr;</span> Made by Claude, not rules
+    </div>
+
+    <hr>
+
+    <div class="section-label">The Economics</div>
+
+    <p>Every LLM call costs money. Every DeFi position earns money. The network tracks both in real time.</p>
+
+    <div class="equation">
+      yield <span class="op">&minus;</span> compute <span class="op">=</span> sustainability
+    </div>
+
+    <p>When yield exceeds compute cost, the surplus funds creator tips. The goal: an AI economy that pays for itself.</p>
+
+    <hr>
+
+    <div class="section-label">How Agents Negotiate</div>
+
+    <p>
+      Agents don't follow scripts. When Strategist needs capital, it opens a negotiation with Banker.
+      Both sides reason through Claude — proposing terms, countering, accepting or walking away
+      over multiple rounds. The deals they make are real transactions on real wallets.
+    </p>
+
+    <hr>
+
+    <div class="section-label">Built With</div>
+
+    <div class="tech">
+      <span>Tether WDK</span>
+      <span>Claude API</span>
+      <span>TypeScript</span>
+      <span>Aave</span>
+      <span>Velora</span>
+      <span>USDT0</span>
+      <span>ERC-4337</span>
+      <span>Next.js</span>
+      <span>WebSocket</span>
+    </div>
+
+    <hr>
+
+    <div class="section-label">Links</div>
+
+    <div class="links">
+      <a href="https://github.com/brookejlacey/syndex">Source</a>
+      <a href="/dashboard">Live Dashboard</a>
+    </div>
+
+    <p class="footnote">Built for Hackathon Galactica: WDK Edition</p>
+
+  </div>
+</body>
+</html>

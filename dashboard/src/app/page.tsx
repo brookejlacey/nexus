@@ -1,118 +1,265 @@
-'use client';
+import type { Metadata } from 'next';
+import Link from 'next/link';
 
-import { useWebSocket } from '@/hooks/useWebSocket';
-import { AgentCard } from '@/components/AgentCard';
-import { FlowDiagram } from '@/components/FlowDiagram';
-import { MetricsBar } from '@/components/MetricsBar';
-import { ActivityFeed } from '@/components/ActivityFeed';
-import { LoanTable } from '@/components/LoanTable';
-import { TipFeed } from '@/components/TipFeed';
-import { PositionsChart } from '@/components/PositionsChart';
-import { NegotiationPanel } from '@/components/NegotiationPanel';
-import { CommandTerminal } from '@/components/CommandTerminal';
-import { EconomicsPanel } from '@/components/EconomicsPanel';
+export const metadata: Metadata = {
+  title: 'Syndex — Four AI Agents, One Economy',
+  description: 'A self-sustaining network where autonomous agents lend, invest, negotiate, and tip creators — funded entirely by the yield they generate.',
+};
 
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3001';
-
-export default function Dashboard() {
-  const { state, decisions, alerts, connected } = useWebSocket(WS_URL);
-
+export default function Landing() {
   return (
-    <div className="min-h-screen p-6 max-w-[1600px] mx-auto">
-      {/* Header */}
-      <header className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            <span className="text-cyan-400">SYNDEX</span>
-            <span className="text-[var(--text-secondary)] font-normal text-lg ml-3">Multi-Agent Economic Network</span>
-          </h1>
-          <p className="text-sm text-[var(--text-secondary)] mt-1">
-            Self-sustaining AI agents earning, lending, and tipping — powered by Tether WDK
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+
+        .landing * { box-sizing: border-box; }
+        .landing {
+          --black: #080808;
+          --white: #e8e8e8;
+          --dim: #666;
+          --faint: #222;
+          --accent: #34d399;
+          background: var(--black);
+          color: var(--white);
+          font-family: 'IBM Plex Sans', system-ui, sans-serif;
+          font-weight: 300;
+          line-height: 1.7;
+          min-height: 100vh;
+        }
+        .landing .page {
+          max-width: 720px;
+          margin: 0 auto;
+          padding: 12vh 24px 16vh;
+        }
+        .landing .mark {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 0.75rem;
+          font-weight: 400;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: var(--accent);
+          margin-bottom: 4rem;
+        }
+        .landing h1 {
+          font-family: 'IBM Plex Sans', sans-serif;
+          font-size: clamp(2.2rem, 5vw, 3.4rem);
+          font-weight: 300;
+          line-height: 1.2;
+          letter-spacing: -0.02em;
+          margin-bottom: 2rem;
+          color: var(--white);
+        }
+        .landing .lead {
+          font-size: 1.1rem;
+          color: var(--dim);
+          max-width: 540px;
+          margin-bottom: 6rem;
+        }
+        .landing hr {
+          border: none;
+          border-top: 1px solid var(--faint);
+          margin: 4rem 0;
+        }
+        .landing .section-label {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 0.7rem;
+          font-weight: 500;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: var(--dim);
+          margin-bottom: 2rem;
+        }
+        .landing p {
+          color: #aaa;
+          margin-bottom: 1.5rem;
+          max-width: 580px;
+        }
+        .landing .agents {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1px;
+          background: var(--faint);
+          border: 1px solid var(--faint);
+          margin: 2rem 0 4rem;
+        }
+        .landing .agent {
+          background: var(--black);
+          padding: 1.8rem;
+        }
+        .landing .agent-name {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 0.8rem;
+          font-weight: 500;
+          letter-spacing: 0.05em;
+          color: var(--white);
+          margin-bottom: 0.6rem;
+        }
+        .landing .agent-desc {
+          font-size: 0.85rem;
+          color: var(--dim);
+          line-height: 1.5;
+          max-width: none;
+          margin: 0;
+        }
+        .landing .flow {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 0.8rem;
+          line-height: 2.2;
+          color: var(--dim);
+          margin: 2rem 0 4rem;
+          padding-left: 1rem;
+          border-left: 1px solid var(--faint);
+        }
+        .landing .flow .hl { color: var(--accent); }
+        .landing .flow .lb { color: var(--white); }
+        .landing .tech {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          margin: 1.5rem 0 4rem;
+        }
+        .landing .tech span {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 0.72rem;
+          letter-spacing: 0.04em;
+          color: var(--dim);
+          border: 1px solid var(--faint);
+          padding: 0.4rem 0.75rem;
+        }
+        .landing .links {
+          display: flex;
+          gap: 2rem;
+          margin-top: 2rem;
+        }
+        .landing .links a {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 0.8rem;
+          color: var(--white);
+          text-decoration: none;
+          letter-spacing: 0.02em;
+          padding-bottom: 2px;
+          border-bottom: 1px solid var(--faint);
+          transition: border-color 0.2s;
+        }
+        .landing .links a:hover { border-color: var(--accent); }
+        .landing .equation {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 1rem;
+          color: var(--white);
+          margin: 1.5rem 0 1rem;
+          letter-spacing: 0.02em;
+        }
+        .landing .equation .op { color: var(--accent); }
+        .landing .footnote {
+          font-size: 0.82rem;
+          color: #555;
+          margin-top: 3rem;
+          font-style: italic;
+        }
+        @media (max-width: 540px) {
+          .landing .agents { grid-template-columns: 1fr; }
+          .landing .page { padding: 8vh 20px 12vh; }
+          .landing .lead { margin-bottom: 4rem; }
+        }
+      `}</style>
+      <div className="landing">
+        <div className="page">
+
+          <div className="mark">Syndex</div>
+
+          <h1>Four AI agents.<br />One economy.</h1>
+
+          <p className="lead">
+            A self-sustaining network where autonomous agents lend, invest,
+            negotiate, and tip creators — funded entirely by the yield they generate.
           </p>
-        </div>
-        <div className="flex items-center gap-3">
-          {state?.economics && (
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border ${
-              state.economics.selfSustaining
-                ? 'border-green-500/30 bg-green-500/10'
-                : 'border-yellow-500/30 bg-yellow-500/10'
-            }`}>
-              <span className="text-xs font-medium">
-                {state.economics.selfSustaining ? 'SELF-SUSTAINING' : 'BUILDING'}
-              </span>
+
+          <hr />
+
+          <div className="section-label">The Agents</div>
+
+          <div className="agents">
+            <div className="agent">
+              <div className="agent-name">Syndex</div>
+              <p className="agent-desc">Orchestrator. Distributes capital, monitors health, tracks whether the network earns more than it spends.</p>
             </div>
-          )}
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border ${connected ? 'border-green-500/30 bg-green-500/10' : 'border-red-500/30 bg-red-500/10'}`}>
-            <div className={`w-2 h-2 rounded-full animate-pulse-dot ${connected ? 'bg-green-500' : 'bg-red-500'}`} />
-            <span className="text-xs font-medium">{connected ? 'LIVE' : 'CONNECTING'}</span>
-          </div>
-        </div>
-      </header>
-
-      {!state ? (
-        <div className="flex items-center justify-center h-96">
-          <div className="text-center">
-            <div className="text-4xl mb-4 animate-pulse">⬡</div>
-            <p className="text-[var(--text-secondary)]">Connecting to Syndex network...</p>
-            <p className="text-xs text-[var(--text-secondary)] mt-2">Make sure the agent runtime is running on port 3001</p>
-          </div>
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {/* Alerts */}
-          {alerts.length > 0 && (
-            <div className="space-y-2">
-              {alerts.slice(-3).map((alert, i) => (
-                <div key={i} className={`px-4 py-2 rounded-lg border text-sm ${
-                  alert.level === 'error' ? 'border-red-500/30 bg-red-500/10 text-red-400' :
-                  alert.level === 'warn' ? 'border-yellow-500/30 bg-yellow-500/10 text-yellow-400' :
-                  'border-blue-500/30 bg-blue-500/10 text-blue-400'
-                }`}>
-                  {alert.message}
-                </div>
-              ))}
+            <div className="agent">
+              <div className="agent-name">Banker</div>
+              <p className="agent-desc">Runs a lending pool with credit scoring. Parks idle capital in Aave for base yield.</p>
             </div>
-          )}
-
-          {/* Economics overview */}
-          <EconomicsPanel economics={state.economics} />
-
-          {/* Top metrics */}
-          <MetricsBar state={state} />
-
-          {/* Agent cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {(['syndex', 'banker', 'strategist', 'patron'] as const).map(role => (
-              <AgentCard key={role} agent={state.agents[role]} />
-            ))}
-          </div>
-
-          {/* Command terminal */}
-          <CommandTerminal />
-
-          {/* Main content grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left column */}
-            <div className="lg:col-span-2 space-y-6">
-              <FlowDiagram state={state} />
-              <PositionsChart state={state} />
-              <NegotiationPanel negotiations={state.negotiations || []} />
-              <LoanTable loans={state.loans} />
+            <div className="agent">
+              <div className="agent-name">Strategist</div>
+              <p className="agent-desc">DeFi operator. Supplies to Aave, swaps on Velora, bridges USDT0 — chasing the best risk-adjusted return.</p>
             </div>
-
-            {/* Right column */}
-            <div className="space-y-6">
-              <ActivityFeed decisions={decisions} />
-              <TipFeed tips={state.tips} />
+            <div className="agent">
+              <div className="agent-name">Patron</div>
+              <p className="agent-desc">Tips Rumble creators using surplus yield. The network&#39;s way of giving back.</p>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* Footer */}
-      <footer className="mt-12 pt-6 border-t border-[var(--border)] text-center text-xs text-[var(--text-secondary)]">
-        SYNDEX — Built for Hackathon Galactica: WDK Edition 1 | Powered by Tether WDK + Claude AI + OpenClaw
-      </footer>
-    </div>
+          <hr />
+
+          <div className="section-label">How Money Flows</div>
+
+          <div className="flow">
+            <span className="lb">Capital in</span> <span className="hl">&rarr;</span> Syndex distributes to Banker (60%) and Strategist (30%)<br />
+            <span className="lb">Banker</span> <span className="hl">&rarr;</span> Lends between agents, parks idle funds in Aave<br />
+            <span className="lb">Strategist</span> <span className="hl">&rarr;</span> Rotates through DeFi positions for yield<br />
+            <span className="lb">Yield surplus</span> <span className="hl">&rarr;</span> Flows to Patron for creator tips<br />
+            <span className="lb">All decisions</span> <span className="hl">&rarr;</span> Made by Claude, not rules
+          </div>
+
+          <hr />
+
+          <div className="section-label">The Economics</div>
+
+          <p>Every LLM call costs money. Every DeFi position earns money. The network tracks both in real time.</p>
+
+          <div className="equation">
+            yield <span className="op">&minus;</span> compute <span className="op">=</span> sustainability
+          </div>
+
+          <p>When yield exceeds compute cost, the surplus funds creator tips. The goal: an AI economy that pays for itself.</p>
+
+          <hr />
+
+          <div className="section-label">How Agents Negotiate</div>
+
+          <p>
+            Agents don&#39;t follow scripts. When Strategist needs capital, it opens a negotiation with Banker.
+            Both sides reason through Claude — proposing terms, countering, accepting or walking away
+            over multiple rounds. The deals they make are real transactions on real wallets.
+          </p>
+
+          <hr />
+
+          <div className="section-label">Built With</div>
+
+          <div className="tech">
+            <span>Tether WDK</span>
+            <span>Claude API</span>
+            <span>TypeScript</span>
+            <span>Aave</span>
+            <span>Velora</span>
+            <span>USDT0</span>
+            <span>ERC-4337</span>
+            <span>Next.js</span>
+            <span>WebSocket</span>
+          </div>
+
+          <hr />
+
+          <div className="section-label">Links</div>
+
+          <div className="links">
+            <a href="https://github.com/brookejlacey/syndex">Source</a>
+            <Link href="/dashboard">Live Dashboard</Link>
+          </div>
+
+          <p className="footnote">Built for Hackathon Galactica: WDK Edition</p>
+
+        </div>
+      </div>
+    </>
   );
 }
