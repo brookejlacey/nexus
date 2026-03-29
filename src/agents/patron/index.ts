@@ -87,7 +87,7 @@ IMPORTANT: You are an ACTIVE agent. Do NOT hold repeatedly. Analyze creators, ti
   }
 
   protected getTickInterval(): number {
-    return 120_000; // Every 2 minutes
+    return 900_000; // Every 15 minutes — conserve API costs
   }
 
   protected async tick(): Promise<void> {

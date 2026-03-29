@@ -82,7 +82,7 @@ IMPORTANT: You are an ACTIVE agent. Do NOT hold repeatedly — rotate between ac
   }
 
   protected getTickInterval(): number {
-    return 90_000; // Every 90 seconds
+    return 600_000; // Every 10 minutes — conserve API costs
   }
 
   protected async tick(): Promise<void> {

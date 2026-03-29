@@ -119,7 +119,7 @@ ORCHESTRATION RULES:
   }
 
   protected getTickInterval(): number {
-    return 30_000; // Every 30 seconds — fastest loop for monitoring
+    return 300_000; // Every 5 minutes — conserve API costs
   }
 
   protected async tick(): Promise<void> {
