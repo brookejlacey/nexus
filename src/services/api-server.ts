@@ -189,6 +189,11 @@ export class ApiServer {
     this.server.listen(port, '0.0.0.0', () => {
       logger.info(`[API] Server running on http://0.0.0.0:${port}`);
       logger.info(`[API] WebSocket on ws://0.0.0.0:${port}`);
+
+      // Self-ping every 10 minutes to prevent Render free tier spin-down
+      setInterval(() => {
+        fetch(`http://0.0.0.0:${port}/api/health`).catch(() => {});
+      }, 10 * 60 * 1000);
     });
   }
 

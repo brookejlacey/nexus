@@ -15,9 +15,9 @@ export function FlowDiagram({ state }: { state: NetworkState }) {
 
       <svg viewBox="0 0 600 300" className="w-full h-64">
         {/* Connection lines */}
-        <line x1="300" y1="60" x2="150" y2="180" stroke="#2a2a42" strokeWidth="2" strokeDasharray="6 4" className="animate-flow" />
-        <line x1="300" y1="60" x2="300" y2="180" stroke="#2a2a42" strokeWidth="2" strokeDasharray="6 4" className="animate-flow" />
-        <line x1="300" y1="60" x2="450" y2="180" stroke="#2a2a42" strokeWidth="2" strokeDasharray="6 4" className="animate-flow" />
+        <line x1="300" y1="60" x2="150" y2="180" stroke="#22d3ee" strokeWidth="2" strokeDasharray="6 4" opacity="0.5" className="animate-flow" />
+        <line x1="300" y1="60" x2="300" y2="180" stroke="#22d3ee" strokeWidth="2" strokeDasharray="6 4" opacity="0.5" className="animate-flow" />
+        <line x1="300" y1="60" x2="450" y2="180" stroke="#22d3ee" strokeWidth="2" strokeDasharray="6 4" opacity="0.5" className="animate-flow" />
 
         {/* Banker → Strategist (loans) */}
         <line x1="150" y1="180" x2="300" y2="180" stroke="#34d399" strokeWidth="1.5" strokeDasharray="4 3" opacity="0.6" />
