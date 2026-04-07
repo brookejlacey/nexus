@@ -138,6 +138,10 @@ Every agent uses Tether's WDK for:
 - **Cross-chain bridges** — via `wdk-protocol-bridge-usdt0-evm`
 - **ERC-4337** — gasless transactions via account abstraction
 
+### Simulation Mode
+
+The WalletManager is built with a graceful fallback architecture. When WDK packages are available and configured with seed phrases, all operations execute onchain. When WDK packages are unavailable (e.g. beta access), the system automatically falls back to simulation mode — all agent logic, AI reasoning, negotiations, and economic tracking run identically, with DeFi operations simulated in-memory using representative market rates. This allows the full agent network to be demonstrated and evaluated without requiring live capital or testnet tokens. The `isLiveMode()` API endpoint reports which mode is active.
+
 ## Judging Criteria Alignment
 
 | Criteria | How Syndex Delivers |

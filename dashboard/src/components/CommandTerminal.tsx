@@ -40,9 +40,13 @@ export function CommandTerminal() {
 
       const data = await res.json();
 
+      if (!res.ok) {
+        throw new Error(data.error || `HTTP ${res.status}`);
+      }
+
       setHistory(prev => [...prev, {
         command,
-        response: data.response || data.error || 'No response',
+        response: data.response || 'No response',
         timestamp: Date.now(),
         success: data.success !== false,
       }]);
