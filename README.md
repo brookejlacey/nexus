@@ -1,166 +1,109 @@
-# SYNDEX — Self-Sustaining Multi-Agent Economic Network
+# SYNDEX
 
-**Hackathon Galáctica: WDK Edition 1 Submission**
+**Four AI agents run a self-sustaining onchain economy that earns enough yield to pay for its own intelligence. No human approves the trades.**
 
-SYNDEX is an autonomous network of AI agents that form a self-sustaining micro-economy. Each agent has its own Tether WDK wallet, its own P&L, and its own AI-powered decision-making logic. The agents earn revenue from DeFi, lend to each other, and tip content creators — all without human intervention.
+Each agent holds its own wallet, its own P&L, and its own Claude-powered reasoning. They lend to each other, deploy capital into DeFi, and tip creators from the surplus. When one agent needs money from another, they do not just request and approve: they negotiate.
 
-### Legend-Tier Features
+<p align="center">
+  <img src="docs/negotiation.gif" alt="Two AI agents negotiating a loan over multiple rounds, live" width="760">
+</p>
 
-- **Agent-to-Agent Negotiation** — When Strategist needs a loan, agents engage in multi-round LLM-powered negotiations. Each side reasons about the other's proposal and formulates counter-offers across up to 4 rounds until a deal is struck.
-- **Natural Language Treasury Control** — Humans command the economy in plain English via a CLI terminal: "move 200 USDt from banker to strategist", "pause the patron", "what's the yield?"
-- **Self-Sustaining Economics** — Real-time tracking of AI compute costs vs DeFi yield. The network's goal is to earn more from DeFi than it spends on Claude API reasoning — paying for its own intelligence.
+> Every line of reasoning above is generated live by Claude. Run it yourself: `npx tsx scripts/demo-negotiation.ts`
+
+## The hero: agent-to-agent negotiation
+
+Most "multi-agent" systems are a planner handing tasks to workers. Syndex is different. The agents have competing incentives and have to reach a deal.
+
+When the Strategist finds a yield opportunity and needs capital, it opens a negotiation with the Banker instead of filing a request:
+
+1. **Strategist proposes** terms (amount, rate, duration) and argues why they are fair.
+2. **Banker reasons** about the proposal against its pool size, utilization, and the borrower's credit score, then accepts or counters.
+3. **Strategist** evaluates the counter against its expected yield and the safety margin it needs, then accepts or counters again.
+4. Up to **4 rounds**, then a final accept or walk-away.
+
+Each turn is a real LLM call that reads the full negotiation history and formulates the next move. The Banker enforces a rate floor and a credit premium; the Strategist only borrows when the spread clears its margin. Deals get struck somewhere in the middle, exactly like a real desk. The logic lives in [`src/core/negotiation-engine.ts`](src/core/negotiation-engine.ts).
+
+## Two more things that make it real
+
+- **Natural-language treasury control.** Command the whole economy in plain English from a terminal: "move 200 USDt from banker to strategist", "pause the patron", "what's the yield?" Parsed and executed by the [`CommandEngine`](src/core/command-engine.ts).
+- **Self-sustaining economics.** The network tracks Claude API spend against DeFi yield in real time. The goal is to earn more from yield than it burns on reasoning, so the economy literally pays for its own intelligence and tips creators from whatever is left over.
+
+## The four agents
+
+| Agent | Role |
+|-------|------|
+| **Syndex** | Orchestrator. Creates wallets, distributes capital, monitors network health and economics. |
+| **Banker** | Lending pool. Credit scoring, loan issuance, parks idle capital in Aave for yield. |
+| **Strategist** | DeFi engine. Aave supply, Velora swaps, cross-chain bridges, yield optimization. |
+| **Patron** | Creator tipping on Rumble, funded entirely by the network's yield surplus. |
+
+Every agent extends a single `BaseAgent` class and communicates over a pub/sub `MessageBus`. All inter-agent messages are validated by Zod schemas.
+
+## How the money flows
+
+```
+Syndex distributes capital  ->  60% Banker / 30% Strategist / 10% Patron
+        Banker parks idle USDt in Aave, lends to Strategist on request (negotiated)
+        Strategist deploys to DeFi, earns yield, repays Banker with interest
+        Surplus yield flows to Patron  ->  Patron tips Rumble creators autonomously
+```
+
+The network pays creators out of its own DeFi yields, with no human in the loop.
 
 ## Architecture
 
 ```
-                    ┌──────────────┐
-                    │   SYNDEX     │
-                    │ Orchestrator │
-                    └──────┬───────┘
-                           │
-              ┌────────────┼────────────┐
-              │            │            │
-        ┌─────▼─────┐ ┌───▼────┐ ┌─────▼────┐
-        │  BANKER   │ │ STRAT  │ │  PATRON  │
-        │  Lending  │ │  DeFi  │ │ Tipping  │
-        └───────────┘ └────────┘ └──────────┘
-              │            │            │
-              └────────────┼────────────┘
-                           │
-                    ┌──────▼───────┐
-                    │  Tether WDK  │
-                    │  (Wallets)   │
-                    └──────────────┘
+                    +--------------+
+                    |   SYNDEX     |
+                    | Orchestrator |
+                    +------+-------+
+                           |
+              +------------+------------+
+              |            |            |
+        +-----v-----+ +----v---+ +------v---+
+        |  BANKER   | | STRAT  | |  PATRON  |
+        |  Lending  | |  DeFi  | | Tipping  |
+        +-----------+ +--------+ +----------+
+              |            |            |
+              +------------+------------+
+                           |
+                    +------v-------+
+                    |  Tether WDK  |
+                    |  (Wallets)   |
+                    +--------------+
 ```
 
-### Agents
+**Stack:** Tether WDK (self-custodial, multi-chain, ERC-4337 wallets) · Claude API for per-agent reasoning · TypeScript / Node 22 runtime · Next.js + Tailwind + WebSocket dashboard.
 
-| Agent | Track | Role |
-|-------|-------|------|
-| **Syndex** | Agent Wallets | Orchestrator — creates wallets, distributes capital, monitors health |
-| **Banker** | Lending Bot | Autonomous lending — credit scoring, loan issuance, Aave idle yield |
-| **Strategist** | Autonomous DeFi | Yield optimization — Aave supply, Velora swaps, cross-chain bridges |
-| **Patron** | Tipping Bot | Creator tipping on Rumble — funded by DeFi yield surplus |
-
-### Money Flow
-
-1. Syndex creates WDK wallets for all agents
-2. Initial capital distributed: 60% Banker, 30% Strategist, 10% Patron
-3. Banker parks idle capital in Aave, lends to Strategist on request
-4. Strategist deploys to DeFi, earns yield, repays Banker with interest
-5. Surplus yield flows to Patron
-6. Patron tips Rumble creators autonomously
-7. **The network literally pays creators from its own DeFi yields**
-
-## Tech Stack
-
-- **Wallets**: Tether WDK (self-custodial, multi-chain, ERC-4337)
-- **AI Reasoning**: Claude API (Anthropic) — each agent has its own reasoning chain
-- **Agent Framework**: OpenClaw integration via custom skill
-- **Dashboard**: Next.js + Tailwind + WebSocket real-time updates
-- **Runtime**: Node.js 22+ / TypeScript
-
-## Quick Start
-
-### Prerequisites
-
-- Node.js 22+
-- Anthropic API key
-- WDK API key (optional, for indexer)
-
-### Setup
+## Run it
 
 ```bash
-# Clone
 git clone https://github.com/brookejlacey/syndex.git
 cd syndex
-
-# Install dependencies
 npm install
-cd dashboard && npm install && cd ..
+cp .env.example .env          # add your ANTHROPIC_API_KEY
 
-# Configure
-cp .env.example .env
-# Edit .env with your API keys
+# Watch two agents negotiate a loan, live:
+npx tsx scripts/demo-negotiation.ts
 
-# Start agent runtime
-npm run dev
-
-# In another terminal, start dashboard
-npm run dashboard:dev
+# Or boot the full network + dashboard:
+npm run dev                   # agent runtime + API on :3001
+npm run dashboard:dev         # dashboard on :3000
 ```
 
-### Environment Variables
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `ANTHROPIC_API_KEY` | Yes | Claude API key for agent reasoning |
-| `SYNDEX_SEED` | No | WDK seed phrase for Syndex wallet (auto-generated if not set) |
-| `BANKER_SEED` | No | WDK seed phrase for Banker wallet |
-| `STRATEGIST_SEED` | No | WDK seed phrase for Strategist wallet |
-| `PATRON_SEED` | No | WDK seed phrase for Patron wallet |
-| `WDK_API_KEY` | No | WDK Indexer API key |
-| `ETH_RPC_URL` | No | Ethereum/Sepolia RPC endpoint |
-| `INITIAL_CAPITAL` | No | Starting capital in USDt (default: 1000) |
+Only `ANTHROPIC_API_KEY` is required. WDK seed phrases, RPC URLs, and starting capital are optional; see [`.env.example`](.env.example).
 
 ## Dashboard
 
-Real-time visualization at `http://localhost:3000`:
+A real-time Next.js dashboard at `http://localhost:3000`: per-agent cards (balance, P&L, last action), an SVG topology of money flows, the live loan table with credit scores, the AI decision feed with reasoning, the creator-tip feed, and a TVL / yield / tips metrics bar.
 
-- **Agent cards** — status, balance, P&L, last action for each agent
-- **Network topology** — SVG visualization of money flows between agents
-- **Loan table** — active/repaid loans with credit scoring
-- **Activity feed** — live AI decision log with reasoning
-- **Tip feed** — creator tips funded by DeFi yields
-- **Metrics bar** — TVL, yield earned, tips distributed
+## Simulation mode
 
-## OpenClaw Integration
+The `WalletManager` has a graceful fallback. With WDK packages installed and seed phrases configured, every operation executes onchain. Without them, the system drops into simulation mode: all agent logic, reasoning, negotiations, and economic tracking run identically, with DeFi operations simulated in-memory at representative market rates. This lets the full network be demonstrated and evaluated without live capital or testnet tokens. The `isLiveMode()` API endpoint reports which mode is active.
 
-Install the Syndex skill on your OpenClaw instance (Mac Mini):
+## WDK integration
 
-```bash
-cp -r openclaw-skill ~/.openclaw/skills/syndex-network
-```
-
-Then interact via WhatsApp/Telegram/Slack:
-- `/syndex status` — full network state
-- `/syndex banker` — lending pool metrics
-- `/syndex strategist` — DeFi positions
-- `/syndex patron` — tip history
-
-## WDK Integration
-
-Every agent uses Tether's WDK for:
-- **Wallet creation** — self-custodial, BIP-39 seed phrases
-- **Token transfers** — USDt between agents
-- **Aave lending** — supply/withdraw via `wdk-protocol-lending-aave-evm`
-- **DEX swaps** — via `wdk-protocol-swap-velora-evm`
-- **Cross-chain bridges** — via `wdk-protocol-bridge-usdt0-evm`
-- **ERC-4337** — gasless transactions via account abstraction
-
-### Simulation Mode
-
-The WalletManager is built with a graceful fallback architecture. When WDK packages are available and configured with seed phrases, all operations execute onchain. When WDK packages are unavailable (e.g. beta access), the system automatically falls back to simulation mode — all agent logic, AI reasoning, negotiations, and economic tracking run identically, with DeFi operations simulated in-memory using representative market rates. This allows the full agent network to be demonstrated and evaluated without requiring live capital or testnet tokens. The `isLiveMode()` API endpoint reports which mode is active.
-
-## Judging Criteria Alignment
-
-| Criteria | How Syndex Delivers |
-|----------|-------------------|
-| Agent Intelligence | 4 independent LLM-powered agents with distinct reasoning chains and decision logic |
-| WDK Integration | Every agent has its own WDK wallet; real USDt flows via lending, swaps, bridges |
-| Technical Execution | Clean TypeScript architecture, modular agent system, real-time WebSocket dashboard |
-| Agentic Payment Design | Agent-to-agent lending, yield-funded tipping, conditional payment flows |
-| Originality | Multi-agent economy — agents earn their own operating costs, forming a self-sustaining network |
-| Polish & Ship-ability | Production-ready dashboard, OpenClaw integration, comprehensive API |
-
-## Third-Party Services & APIs
-
-- **Anthropic Claude API** — AI reasoning for agent decisions
-- **Tether WDK** — Wallet operations, DeFi protocols
-- **Aave V3** (via WDK) — Lending/supply protocol
-- **Velora** (via WDK) — DEX aggregator
-- **USDT0** (via WDK) — Cross-chain bridge
-- **OpenClaw** — Agent framework for human interface
+Every agent uses Tether's WDK for wallet creation (BIP-39 seed phrases), USDt transfers, Aave lending (`wdk-protocol-lending-aave-evm`), DEX swaps (`wdk-protocol-swap-velora-evm`), cross-chain bridges (`wdk-protocol-bridge-usdt0-evm`), and gasless transactions via ERC-4337 account abstraction.
 
 ## License
 

@@ -134,6 +134,64 @@ describe('NegotiationEngine', () => {
     });
   });
 
+  describe('rate normalization', () => {
+    it('coerces a percent-style counter rate (7.5) to a fraction (0.075)', async () => {
+      // The LLM sometimes returns interestRate as a percent rather than a
+      // decimal. Without normalization, "7.5" becomes 750% APR.
+      vi.spyOn(brain, 'think').mockResolvedValue({
+        agent: 'banker',
+        action: 'counter',
+        reasoning: 'Credit risk premium applies',
+        confidence: 0.7,
+        parameters: { amount: 400, interestRate: 7.5, duration: 48 },
+        timestamp: 0,
+      });
+
+      const id = await engine.initiateNegotiation(
+        'strategist',
+        'banker',
+        { amount: 400, interestRate: 0.045, duration: 48 },
+        'yield',
+      );
+
+      const { accept, counterTerms } = await engine.evaluateAsLender(id, {
+        poolSize: 600,
+        utilization: 0.2,
+        creditScore: 580,
+      });
+
+      expect(accept).toBe(false);
+      expect(counterTerms.interestRate).toBeCloseTo(0.075);
+      expect(counterTerms.interestRate).toBeLessThanOrEqual(1.0);
+    });
+
+    it('clamps an absurd rate to the 100% ceiling', async () => {
+      vi.spyOn(brain, 'think').mockResolvedValue({
+        agent: 'banker',
+        action: 'counter',
+        reasoning: 'broken',
+        confidence: 0.5,
+        parameters: { amount: 400, interestRate: 1200, duration: 48 },
+        timestamp: 0,
+      });
+
+      const id = await engine.initiateNegotiation(
+        'strategist',
+        'banker',
+        { amount: 400, interestRate: 0.045, duration: 48 },
+        'yield',
+      );
+
+      const { counterTerms } = await engine.evaluateAsLender(id, {
+        poolSize: 600,
+        utilization: 0.2,
+        creditScore: 580,
+      });
+
+      expect(counterTerms.interestRate).toBe(1.0);
+    });
+  });
+
   describe('getNegotiations', () => {
     it('returns all negotiations', async () => {
       await engine.initiateNegotiation('strategist', 'banker', { amount: 100, interestRate: 0.06, duration: 12 }, 'a');

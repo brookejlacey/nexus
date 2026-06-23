@@ -21,6 +21,21 @@ import { randomUUID } from 'crypto';
 
 const MAX_ROUNDS = 4;
 
+/** Hard ceiling on any negotiated rate (100% APR). */
+const MAX_RATE = 1.0;
+
+/**
+ * Coerce an LLM-supplied interest rate to a decimal fraction.
+ * The model sometimes returns a percent ("7.5" meaning 7.5%) and sometimes
+ * a fraction ("0.075"). Anything > 1 is read as a percent, then clamped to
+ * [floor, MAX_RATE] so a single bad token can't blow up the economics.
+ */
+function normalizeRate(raw: unknown, fallback: number, floor = 0.05): number {
+  let r = typeof raw === 'number' && Number.isFinite(raw) ? raw : fallback;
+  if (r > 1) r = r / 100;
+  return Math.min(MAX_RATE, Math.max(floor, r));
+}
+
 export class NegotiationEngine {
   private negotiations: Map<string, Negotiation> = new Map();
   private bus: MessageBus;
@@ -272,7 +287,7 @@ Round ${neg.rounds.length + 1} of ${MAX_ROUNDS}. ${neg.rounds.length >= MAX_ROUN
       accept: false,
       counterTerms: {
         amount: (decision.parameters.amount as number) || proposed.amount,
-        interestRate: Math.max(0.05, (decision.parameters.interestRate as number) || proposed.interestRate * 1.1),
+        interestRate: normalizeRate(decision.parameters.interestRate, proposed.interestRate * 1.1),
         duration: (decision.parameters.duration as number) || proposed.duration,
       },
     };
@@ -337,7 +352,7 @@ Round ${neg.rounds.length + 1} of ${MAX_ROUNDS}. ${neg.rounds.length >= MAX_ROUN
       accept: false,
       counterTerms: {
         amount: (decision.parameters.amount as number) || proposed.amount,
-        interestRate: Math.max(0.05, (decision.parameters.interestRate as number) || proposed.interestRate * 0.95),
+        interestRate: normalizeRate(decision.parameters.interestRate, proposed.interestRate * 0.95),
         duration: (decision.parameters.duration as number) || proposed.duration,
       },
     };
