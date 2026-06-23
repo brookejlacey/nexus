@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Syndex — Four AI Agents, One Economy',
-  description: 'A self-sustaining network where autonomous agents lend, invest, negotiate, and tip creators — funded entirely by the yield they generate.',
+  title: 'Syndex: Four AI Agents, One Economy',
+  description: 'A self-sustaining network where autonomous agents lend, invest, negotiate, and tip creators, funded entirely by the yield they generate.',
 };
 
 export default function Landing() {
@@ -183,7 +183,7 @@ export default function Landing() {
 
           <p className="lead">
             A self-sustaining network where autonomous agents lend, invest,
-            negotiate, and tip creators — funded entirely by the yield they generate.
+            negotiate, and tip creators, funded entirely by the yield they generate.
           </p>
 
           <Link href="/dashboard" className="dash-link">Live Dashboard</Link>
@@ -203,7 +203,7 @@ export default function Landing() {
             </div>
             <div className="agent">
               <div className="agent-name">Strategist</div>
-              <p className="agent-desc">DeFi operator. Supplies to Aave, swaps on Velora, bridges USDT0 — chasing the best risk-adjusted return.</p>
+              <p className="agent-desc">DeFi operator. Supplies to Aave, swaps on Velora, bridges USDT0, chasing the best risk-adjusted return.</p>
             </div>
             <div className="agent">
               <div className="agent-name">Patron</div>
@@ -241,7 +241,7 @@ export default function Landing() {
 
           <p>
             Agents don&#39;t follow scripts. When Strategist needs capital, it opens a negotiation with Banker.
-            Both sides reason through Claude — proposing terms, countering, accepting or walking away
+            Both sides reason through Claude, proposing terms, countering, accepting or walking away
             over multiple rounds. The deals they make are real transactions on real wallets.
           </p>
 
@@ -270,7 +270,7 @@ export default function Landing() {
             <Link href="/dashboard">Live Dashboard</Link>
           </div>
 
-          <p className="footnote">Built for Hackathon Galactica: WDK Edition</p>
+          <p className="footnote">Self-custodial agent wallets on Tether WDK. No human in the loop.</p>
 
         </div>
       </div>

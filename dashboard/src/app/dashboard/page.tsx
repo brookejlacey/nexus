@@ -27,7 +27,7 @@ export default function Dashboard() {
             <span className="text-[var(--text-secondary)] font-normal text-lg ml-3">Multi-Agent Economic Network</span>
           </h1>
           <p className="text-sm text-[var(--text-secondary)] mt-1">
-            Self-sustaining AI agents earning, lending, and tipping — powered by Tether WDK
+            Self-sustaining AI agents earning, lending, and tipping, all on Tether WDK
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -111,7 +111,7 @@ export default function Dashboard() {
 
       {/* Footer */}
       <footer className="mt-12 pt-6 border-t border-[var(--border)] text-center text-xs text-[var(--text-secondary)]">
-        SYNDEX — Built for Hackathon Galactica: WDK Edition 1 | Powered by Tether WDK + Claude AI + OpenClaw
+        SYNDEX · A self-sustaining economy of autonomous agents · Self-custodial wallets on Tether WDK
       </footer>
     </div>
   );

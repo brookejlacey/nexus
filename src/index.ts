@@ -25,8 +25,8 @@ import { logger } from './utils/logger.js';
 
 async function main() {
   logger.info('═══════════════════════════════════════════');
-  logger.info('  SYNDEX — Multi-Agent Economic Network');
-  logger.info('  Powered by Tether WDK + Claude AI');
+  logger.info('  SYNDEX · Multi-Agent Economic Network');
+  logger.info('  Self-custodial agent wallets on Tether WDK');
   logger.info('═══════════════════════════════════════════');
 
   // ─── Shared Infrastructure ──────────────────────────────────
